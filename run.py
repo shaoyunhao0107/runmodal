@@ -3,10 +3,11 @@ import os
 import sys
 import shlex
 
-stub = modal.Stub("stable-diffusion-webui")
+# 使用 App 替代 Stub
+app = modal.App("stable-diffusion-webui")
 
-# Create a persistent volume
-volume = modal.NetworkFileSystem.persisted("stable-diffusion-webui-data")
+# 创建持久化存储，使用新的 API
+volume = modal.NetworkFileSystem.from_name("stable-diffusion-webui-data", create_if_missing=True)
 
 def download_models():
     models = [
@@ -21,7 +22,7 @@ def download_models():
         if not os.path.exists(output_path):
             os.system(f"aria2c --console-log-level=error -c -x 16 -s 16 -k 1M {url} -d /content/stable-diffusion-webui/models/Stable-diffusion -o {model_name}")
 
-@stub.function(
+@app.function(
     image=modal.Image.from_registry("nvidia/cuda:12.2.0-base-ubuntu22.04", add_python="3.11")
     .run_commands([
         "apt update -y",
@@ -60,6 +61,6 @@ def run():
     launch_utils.prepare_environment()
     launch_utils.start()
 
-@stub.local_entrypoint()
+@app.local_entrypoint()
 def main():
     run.remote()
