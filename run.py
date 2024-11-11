@@ -6,7 +6,7 @@ import shlex
 # 创建 Modal 应用对象
 app = modal.App("stable-diffusion-webui")
 
-# 使用临时网络文件系统 (Ephemeral)
+# 使用 Ephemeral NetworkFileSystem 创建临时卷
 volume = modal.NetworkFileSystem.ephemeral()
 
 @app.function(
@@ -23,7 +23,7 @@ volume = modal.NetworkFileSystem.ephemeral()
         pip install -q torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 torchtext==0.15.2 torchdata==0.6.1 --extra-index-url https://download.pytorch.org/whl/cu118 && \
         pip install -q xformers==0.0.20 triton==2.0.0 packaging==23.1"
     ),
-    network_file_systems={"/content/stable-diffusion-webui": volume},  # 挂载网络文件系统
+    network_file_systems={"/content/stable-diffusion-webui": volume},  # 使用 Ephemeral 卷挂载文件系统
     gpu="T4",
     timeout=60000,
 )
