@@ -3,7 +3,7 @@ import modal, os, sys, shlex
 # 创建 Modal 应用对象
 app = modal.App("stable-diffusion-webui")
 
-# 使用 ephemeral 创建临时网络文件系统（如果你不需要持久化文件）
+# 使用临时网络文件系统（ephemeral）
 volume = modal.NetworkFileSystem.ephemeral()
 
 @app.function(
